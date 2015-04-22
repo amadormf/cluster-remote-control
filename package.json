@@ -4,6 +4,7 @@
   "description": "Api for manage a cluster of node",
   "main": "index.js",
   "scripts": {
+    "pretest": "node ./test/cluster_help.js &",
     "test": "mocha"
   },
   "repository": {

@@ -192,20 +192,26 @@ var numCPUs = require('os').cpus().length;
 var clusterApi = require('cluster-api');
 
 if (cluster.isMaster) {
-  // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+	// Fork workers.
+	for (var i = 0; i < numCPUs; i++) {
+		cluster.fork();
+	}
 
-  //launch API
-  clusterApi(conf, function(err){
-  	if(err){
-  		console.error(err);
+  	var conf = {
+		"port" : 3000,
+		"onrestart": function(){},
+		"onshutdwon": function(){},
+		"onadd": function(){}
+  	};
+  	//launch API
+  	clusterApi(conf, function(err){
+	  	if(err){
+	  		console.error(err);
 		} 
 		else{
-  		console.log("Launch api is ok");
-  	}
-  });
+			console.log("Launch api is ok");
+		}
+  	});
   //finish launch API
 } else {
   // Workers can share any TCP connection
