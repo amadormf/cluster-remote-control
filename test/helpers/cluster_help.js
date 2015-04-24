@@ -1,7 +1,7 @@
 var cluster = require('cluster');
 var http = require('http');
 var numCPUs = 4;
-var clusterApi = require('../index');
+var clusterApi = require('../../');
 
 if (cluster.isMaster) {
   // Fork workers.
