@@ -1,4 +1,3 @@
 'use strict';
-module.exports = function(conf, callback){
-	callback();
-};
+
+module.exports = require('./lib/index.js');

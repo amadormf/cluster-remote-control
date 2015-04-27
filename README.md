@@ -179,6 +179,7 @@ Get log of cluster
 	"onrestart": function
 	"onshutdwon": function
 	"onadd": function
+	"app": app  //if send express instance
 }
 
 ##Use
@@ -202,6 +203,7 @@ if (cluster.isMaster) {
 		"onrestart": function(){},
 		"onshutdwon": function(){},
 		"onadd": function(){}
+
   	};
   	//launch API
   	clusterApi(conf, function(err){

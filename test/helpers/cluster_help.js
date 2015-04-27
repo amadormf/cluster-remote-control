@@ -31,7 +31,8 @@ if (cluster.isMaster) {
   // Workers can share any TCP connection
   // In this case its a HTTP server
   http.createServer(function(req, res) {
+    console.log("req");
     res.writeHead(200);
     res.end("hello world\n");
-  }).listen(8000);
+  }).listen(8000, '127.0.0.1');
 }
