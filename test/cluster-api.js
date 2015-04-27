@@ -55,8 +55,14 @@ describe('Check the API of cluster', function(){
 					done(err);
 				}
 				else{
-					var resp = JSON.parse(res.text);
-					console.log(resp);					
+					var primerResultado = JSON.parse(res.text);
+					expect(primerResultado).to.have.property('cluster');
+					expect(primerResultado).to.have.deep.property('cluster.pid');
+					expect(primerResultado).to.have.deep.property('cluster.cpu');
+					expect(primerResultado).to.have.deep.property('cluster.memory');
+					expect(primerResultado.workers).to.be.a('array');
+
+					console.log(primerResultado);					
 					done();
 				}
 			});						
