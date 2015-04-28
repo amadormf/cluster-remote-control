@@ -65,38 +65,19 @@ Restart the worker with :id parameter
 Return:
 
 	{
-		"restart":[
-			"worker":{
-				"id": 1
-				"restarted": true || false
-			}
-			"worker":{
-				"id": 2
-				"restarted": true || false
-			}
-			"worker":{
-				"id": 3
-				"restarted": true || false
-			}
-			"worker":{
-				"id": 4
-				"restarted": true || false
-			}									
-		]
+		"restart": {
+			"restarted":4
+		};
 	}
-
 ###/restart/:id
 Restart one worker
 
 Return:
 
 	{
-		"restart":{
-			"worker":{
-				"id":1,
-				"retarted":true
-			}
-		}
+		"restart": {
+			"restarted":1
+		};
 	}
 	
 

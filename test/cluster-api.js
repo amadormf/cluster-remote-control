@@ -3,6 +3,8 @@
 var spawn = require('child_process').spawn;
 var Buffer = require('buffer');
 var request = require('supertest');
+var async = require('async');
+var helper = require('./helpers/testhelper.js');
 
 var host = 'http://localhost:3000';
 request = request(host);
@@ -55,16 +57,116 @@ describe('Check the API of cluster', function(){
 					done(err);
 				}
 				else{
-					var primerResultado = JSON.parse(res.text);
-					expect(primerResultado).to.have.property('cluster');
-					expect(primerResultado).to.have.deep.property('cluster.pid');
-					expect(primerResultado).to.have.deep.property('cluster.cpu');
-					expect(primerResultado).to.have.deep.property('cluster.memory');
-					expect(primerResultado.workers).to.be.a('array');
-
-					console.log(primerResultado);					
+					var result = JSON.parse(res.text);
+					expect(result).to.have.property('cluster');
+					expect(result).to.have.deep.property('cluster.pid');
+					expect(result).to.have.deep.property('cluster.cpu');
+					expect(result).to.have.deep.property('cluster.memory');
+					expect(result.workers).to.be.a('array');
+					expect(result.workers[0]).to.have.property('id');
+					expect(result.workers[0]).to.have.property('pid');
+					expect(result.workers[0]).to.have.property('cpu');
+					expect(result.workers[0]).to.have.property('memory');
 					done();
 				}
 			});						
+	});
+	it('Check status for one worker', function(done){
+		async.waterfall([			
+			helper.getStatus,
+			function(statusAll, cb){
+				var worker = statusAll.workers[0];
+				request
+					.get('/status/' + worker.id)
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							cb(err);
+						}
+						else{
+							var result = JSON.parse(res.text);
+							expect(result.worker).to.have.property('id');
+							expect(result.worker).to.have.property('pid');
+							expect(result.worker).to.have.property('cpu');
+							expect(result.worker).to.have.property('memory');
+							cb();
+						}						
+					});			
+			}
+		], done);
+	});
+	it('Restart all workers', function(done){
+		request
+			.get('/restart')
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+			.end(function(err,res){
+				if(err){
+					done(err);
+				}
+				else{
+					var result = JSON.parse(res.text);					
+					expect(result).to.have.deep.property('restart.restarted');
+					expect(result.restart.restarted).to.be.a('number');										
+					done();
+				}
+			});		
+	});
+	it('Restart all workers', function(done){
+		async.series([
+			function(callback){
+				request
+					.get('/restart/')
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							callback(err);
+						}
+						else{
+							var result = JSON.parse(res.text);					
+							expect(result).to.have.deep.property('restart.restarted');
+							expect(result.restart.restarted).to.be.a('number');										
+							callback();
+						}
+					});	
+			},
+			function(callback){
+				helper.getStatus(function(error, body){
+					callback();
+				});
+			}
+		], done)
+	
+	});	
+	it('Restart one worker', function(done){
+		async.waterfall([			
+			helper.getStatus,
+			function(statusAll, cb){
+				var worker = statusAll.workers[0];
+				request
+					.get('/restart/' + worker.id)
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							cb(err);
+						}
+						else{
+							var result = JSON.parse(res.text);					
+							expect(result).to.have.deep.property('restart.restarted');
+							expect(result.restart.restarted).to.be.a('number');										
+							cb();
+						}						
+					});			
+			},
+			function(cb){
+				helper.getStatus(function(err, body){
+					cb();
+				});
+			}
+
+		],done);
 	});
 });
