@@ -97,27 +97,10 @@ describe('Check the API of cluster', function(){
 		], done);
 	});
 	it('Restart all workers', function(done){
-		request
-			.get('/restart')
-			.expect(200)
-			.expect('Content-Type', /application\/json/)
-			.end(function(err,res){
-				if(err){
-					done(err);
-				}
-				else{
-					var result = JSON.parse(res.text);					
-					expect(result).to.have.deep.property('restart.restarted');
-					expect(result.restart.restarted).to.be.a('number');										
-					done();
-				}
-			});		
-	});
-	it('Restart all workers', function(done){
 		async.series([
 			function(callback){
 				request
-					.get('/restart/')
+					.get('/restart')
 					.expect(200)
 					.expect('Content-Type', /application\/json/)
 					.end(function(err,res){
@@ -141,10 +124,12 @@ describe('Check the API of cluster', function(){
 	
 	});	
 	it('Restart one worker', function(done){
+		var idWorker = 0;
 		async.waterfall([			
 			helper.getStatus,
 			function(statusAll, cb){
 				var worker = statusAll.workers[0];
+				idWorker = worker.id;
 				request
 					.get('/restart/' + worker.id)
 					.expect(200)
@@ -162,7 +147,7 @@ describe('Check the API of cluster', function(){
 					});			
 			},
 			function(cb){
-				helper.getStatus(function(err, body){
+				helper.getStatusWorker(idWorker, function(err, body){
 					cb();
 				});
 			}
