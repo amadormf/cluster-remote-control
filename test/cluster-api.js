@@ -154,7 +154,36 @@ describe('Check the API of cluster', function(){
 
 		],done);
 	});
-	it('Shutdown all workers');
+	it('Shutdown all workers', function(err, body){
+		async.waterfall([
+		    helper.getStatus,
+		    function(statusAll, cb){
+		    	request
+		    		.get('/shutdown')
+		    		.expect(200)
+		    		.expect('Content-Type', /application\/json/)
+		    		.end(function(err, res){
+		    			if(err){
+		    				cb(err);
+		    			}
+		    			else{
+							var result = JSON.parse(res.text);					
+							expect(result).to.have.deep.property('shutdwon.shutdown');
+							expect(result.restart.restarted).to.be.a('number');										
+							cb(null,statusAll);
+		    			}
+		    		});
+		    },
+		    function(beginStatus, cb){
+		    	helper.getStatus(function(err, status){
+		    		cb(err, beginStatus, status);
+		    	});
+		    },
+		    function(beginStatus, actualStatus, cb){
+		    	expect(beginStatus.workers.length).
+		    }
+		], done)
+	});
 	it('Shutdown one worker');
 	it('Add one worker');
 	it('Add a especific number of workers');
