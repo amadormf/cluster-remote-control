@@ -154,4 +154,9 @@ describe('Check the API of cluster', function(){
 
 		],done);
 	});
+	it('Shutdown all workers');
+	it('Shutdown one worker');
+	it('Add one worker');
+	it('Add a especific number of workers');
+	it('Get the log of cluster');
 });
