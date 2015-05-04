@@ -129,7 +129,8 @@ Return:
 	{
 		"add":{
 			"worker":{ //or null if the add no work
-				"id":3
+				"id":3,
+				"pid":323
 			}
 		}
 	}
@@ -140,13 +141,16 @@ Add a :number of workers to cluster
 	{
 		"add":[
 			"worker":{ //or null if the add no work
-				"id":5
+				"id":5,
+				"pid":323
 			},
 			"worker":{ //or null if the add no work
-				"id":6
+				"id":6,
+				"pid":324
 			},
 			"worker":{ //or null if the add no work
-				"id":7
+				"id":7,
+				"pid":325
 			},						
 		]
 	}

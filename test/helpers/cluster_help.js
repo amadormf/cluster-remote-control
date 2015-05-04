@@ -23,8 +23,11 @@ if (cluster.isMaster) {
   		console.error(err);
 		} 
 		else{
-  		console.log("Launch api is ok");
+  		console.log("Launch web api is ok");
   	}
+  });
+  cluster.on('exit', function(worker, code, signal){
+    console.log("signal=>",signal);
   });
   //finish launch API
 } else {

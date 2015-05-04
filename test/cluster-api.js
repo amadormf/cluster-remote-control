@@ -5,6 +5,7 @@ var Buffer = require('buffer');
 var request = require('supertest');
 var async = require('async');
 var helper = require('./helpers/testhelper.js');
+var _ = require('lodash');
 
 var host = 'http://localhost:3000';
 request = request(host);
@@ -12,20 +13,19 @@ request = request(host);
 describe('Check the API of cluster', function(){
 	var clusterExe;
 	//run cluster
-	before(function(done){
+	beforeEach(function(done){
 		clusterExe = spawn('node', ['./test/helpers/cluster_help.js']);
 		clusterExe.stdout.on('data', function(data){
 			console.log("data:", data.toString('utf8'));
 			
-			if(data.toString('utf8')==="Launch api is ok\n"){
+			if(data.toString('utf8')==="Launch web api is ok\n"){
 				console.log("Launch test");
 				done();
 			}
 		});
 	});
 	//kill cluster
-	after(function(done){
-		console.log("kill cluster");
+	afterEach(function(done){
 		clusterExe.kill('SIGINT');
 		done();
 	});
@@ -154,7 +154,7 @@ describe('Check the API of cluster', function(){
 
 		],done);
 	});
-	it('Shutdown all workers', function(err, body){
+	it('Shutdown all workers', function(done){
 		async.waterfall([
 		    helper.getStatus,
 		    function(statusAll, cb){
@@ -168,8 +168,8 @@ describe('Check the API of cluster', function(){
 		    			}
 		    			else{
 							var result = JSON.parse(res.text);					
-							expect(result).to.have.deep.property('shutdwon.shutdown');
-							expect(result.restart.restarted).to.be.a('number');										
+							expect(result).to.have.deep.property('shutdown.shutdown');
+							expect(result.shutdown.shutdown).to.be.a('number');										
 							cb(null,statusAll);
 		    			}
 		    		});
@@ -180,12 +180,114 @@ describe('Check the API of cluster', function(){
 		    	});
 		    },
 		    function(beginStatus, actualStatus, cb){
-		    	expect(beginStatus.workers.length).
+		    	expect(beginStatus.workers.length).to.not.equal(actualStatus.workers.length);
+		    	expect(actualStatus.workers.length).to.equal(0);
+		    	cb();
 		    }
 		], done)
 	});
-	it('Shutdown one worker');
-	it('Add one worker');
-	it('Add a especific number of workers');
+	it('Shutdown one worker', function(done){
+		async.waterfall([
+			helper.getStatus,
+			function(statusAll, cb){
+				var worker = statusAll.workers[0];
+				request
+					.get('/shutdown/' + worker.id)
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							cb(err);
+						}
+						else{
+							var result = JSON.parse(res.text);
+							expect(result).to.have.deep.property('shutdown.shutdown');						
+							expect(result.shutdown.shutdown).to.be.a('number');
+							expect(result.shutdown.shutdown).to.equal(1);							
+							cb(null,statusAll, worker);
+						}
+					});
+			},
+			function(beginStatus, worker, cb){
+				helper.getStatus(function(err, status){
+					cb(err,beginStatus, worker, status);
+				});
+			},
+			function(beginStatus, worker, actualStatus, cb){
+				expect(beginStatus.workers.length).to.equal(actualStatus.workers.length+1);
+				expect(_.map(actualStatus.workers), function(item){
+					return item.id;
+				}).to.not.include(worker.id);
+				cb();
+			}
+		],done);
+
+	});
+	it('Add one worker', function(done){
+		async.waterfall([
+			helper.getStatus,
+			function(statusAll, cb){
+				request
+					.get('/add')
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							cb(err);
+						}
+						else{
+							var result = JSON.parse(res.text);
+							expect(result).to.have.deep.property('add.worker.id');
+							expect(result).to.have.deep.property('add.worker.pid');
+							cb(null,statusAll, result.add.worker);
+						}
+					});
+			},
+			function(beginStatus, worker, cb){
+				helper.getStatus(function(err,status){
+					cb(err,beginStatus, worker, status);
+				});
+			},
+			function(beginStatus, worker, actualStatus, cb){
+				expect(beginStatus.workers.length).to.equal(actualStatus.workers.length-1);
+				expect(_.map(actualStatus.workers), function(item){
+					return item.id;
+				}).to.not.include(worker.id);
+				cb();
+			}
+		], done);
+	});
+	it('Add a especific number of workers', function(done){
+		async.waterfall([
+			helper.getStatus,
+			function(statusAll, cb){
+				request
+					.get('/add/3')
+					.expect(200)
+					.expect('Content-Type', /application\/json/)
+					.end(function(err,res){
+						if(err){
+							cb(err);
+						}
+						else{
+							var result = JSON.parse(res.text);
+							expect(result.add.length).to.equal(3);
+							expect(result.add[0]).to.have.deep.property('worker.id');
+							expect(result.add[0]).to.have.deep.property('worker.pid');
+							cb(null,statusAll);
+						}
+					});
+			},
+			function(beginStatus, cb){
+				helper.getStatus(function(err,status){
+					cb(err,beginStatus, status);
+				});
+			},
+			function(beginStatus, actualStatus, cb){
+				expect(beginStatus.workers.length).to.equal(actualStatus.workers.length-3);
+				cb();
+			}
+		], done);
+	});
 	it('Get the log of cluster');
 });
