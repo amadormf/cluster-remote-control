@@ -1,6 +1,6 @@
 {
   "name": "cluster-remote-control",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Api for manage a cluster of node in remote",
   "main": "index.js",
   "scripts": {
