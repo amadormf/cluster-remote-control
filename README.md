@@ -1,6 +1,10 @@
 # cluster-api
 Remote control API for manage a cluster of node
 
+#INSTALL
+
+	npm install --save cluster-remote-control
+
 #API
 
 ##GET
@@ -156,12 +160,12 @@ Add a :number of workers to cluster
 	}
 ##Configuration
 
-{
-	"port" : 3000,
-	"app": app,  //if send express instance
-	"listen": true, //if true init the listen express
-	"path": "/cluster", //agregate path to the routes
-}
+	{
+		"port" : 3000,
+		"app": app,  //if send express instance
+		"listen": true, //if true init the listen express
+		"path": "/cluster", //agregate path to the routes
+	}
 
 ##Use
 
