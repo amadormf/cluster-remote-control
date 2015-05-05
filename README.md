@@ -1,4 +1,4 @@
-# cluster-api
+# cluster-remote-control
 Remote control API for manage a cluster of node
 
 #INSTALL
