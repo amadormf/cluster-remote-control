@@ -289,5 +289,4 @@ describe('Check the API of cluster', function(){
 			}
 		], done);
 	});
-	it('Get the log of cluster');
 });

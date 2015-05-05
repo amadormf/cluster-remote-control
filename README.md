@@ -1,5 +1,5 @@
 # cluster-api
-Api for manage a cluster of node
+Remote control API for manage a cluster of node
 
 #API
 
@@ -154,17 +154,13 @@ Add a :number of workers to cluster
 			},						
 		]
 	}
-###/log
-Get log of cluster
-
 ##Configuration
 
 {
 	"port" : 3000,
-	"onrestart": function
-	"onshutdwon": function
-	"onadd": function
-	"app": app  //if send express instance
+	"app": app,  //if send express instance
+	"listen": true, //if true init the listen express
+	"path": "/cluster", //agregate path to the routes
 }
 
 ##Use
@@ -185,10 +181,6 @@ if (cluster.isMaster) {
 
   	var conf = {
 		"port" : 3000,
-		"onrestart": function(){},
-		"onshutdwon": function(){},
-		"onadd": function(){}
-
   	};
   	//launch API
   	clusterApi(conf, function(err){

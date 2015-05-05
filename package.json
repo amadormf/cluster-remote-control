@@ -1,7 +1,7 @@
 {
-  "name": "cluster-api",
+  "name": "cluster-remote-control",
   "version": "0.0.1",
-  "description": "Api for manage a cluster of node",
+  "description": "Api for manage a cluster of node in remote",
   "main": "index.js",
   "scripts": {
     "pretest": "node ./test/cluster_help.js &",
@@ -9,19 +9,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/amadormf/cluster-api.git"
+    "url": "https://github.com/amadormf/cluster-remote-control.git"
   },
   "keywords": [
     "cluster",
     "api",
-    "express"
-  ],
+    "express",
+    "remote",
+    "control",
+    "manage",
+    "API"
+  ],  
   "author": "Amador Mateo <amateofernandez@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/amadormf/cluster-api/issues"
+    "url": "https://github.com/amadormf/cluster-remote-control.git/issues"
   },
-  "homepage": "https://github.com/amadormf/cluster-api",
+  "homepage": "https://github.com/amadormf/cluster-remote-control.git",
   "dependencies": {
     "async": "^0.9.0",
     "express": "^4.12.3",
