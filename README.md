@@ -18,32 +18,32 @@ Return:
 		"cluster": {
 			"pid": 2939,
 			"cpu": "1%",
-			"memory":24  //in Mb
+			"memory":24 
 		}
 		"wokers":[
 			{
 				"id": 1,
 				"pid": 2939,
 				"cpu": "1%",
-				"memory": 33 //in Mb
+				"memory": 33
 			},
 			{
 				"id": 1,
 				"pid": 2940,
 				"cpu": "1%",
-				"memory": 33 //in Mb
+				"memory": 33
 			},
 			{
 				"id": 1,
 				"pid": 2941,
 				"cpu": "1%",
-				"memory": 33 //in Mb
+				"memory": 33
 			},
 			{
 				"id": 1,
 				"pid": 2942,
 				"cpu": "1%",
-				"memory": 33 //in Mb
+				"memory": 33
 			},
 		]
 	}
@@ -59,7 +59,7 @@ Return:
 			"id": 1,
 			"pid": 2939,
 			"cpu": "1%",
-			"memory": 33 //in Mb
+			"memory": 33 
 		}
 	}
 
